@@ -8,7 +8,7 @@ import 'package:flame_game_tutorial/objects/platform_block.dart';
 import 'package:flame_game_tutorial/objects/star.dart';
 import 'package:flutter/material.dart';
 
-class EmberQuestGame extends FlameGame{
+class EmberQuestGame extends FlameGame {
   EmberQuestGame();
 
   late EmberPlayer _ember;
@@ -49,7 +49,6 @@ class EmberQuestGame extends FlameGame{
     world.add(_ember);
   }
 
-
   void loadGameSegments(int segmentIndex, double xPositionOffset) {
     for (final block in segments[segmentIndex]) {
       switch (block.blockType) {
@@ -60,16 +59,17 @@ class EmberQuestGame extends FlameGame{
             xOffset: xPositionOffset,
           ));
         case Star:
-        world.add(
-    Star(
-      gridPosition: block.gridPosition,
-      xOffset: xPositionOffset,
-    ),
-  );
+          world.add(
+            Star(
+              gridPosition: block.gridPosition,
+              xOffset: xPositionOffset,
+            ),
+          );
         case WaterEnemy:
       }
     }
   }
+
   @override
   Color backgroundColor() {
     return const Color.fromARGB(255, 173, 223, 247);
