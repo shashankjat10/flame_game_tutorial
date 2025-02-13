@@ -55,11 +55,17 @@ class EmberQuestGame extends FlameGame{
       switch (block.blockType) {
         case GroundBlock:
         case PlatformBlock:
-          add(PlatformBlock(
+          world.add(PlatformBlock(
             gridPosition: block.gridPosition,
             xOffset: xPositionOffset,
           ));
         case Star:
+        world.add(
+    Star(
+      gridPosition: block.gridPosition,
+      xOffset: xPositionOffset,
+    ),
+  );
         case WaterEnemy:
       }
     }
