@@ -1,11 +1,18 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_game_tutorial/actors/ember.dart';
+import 'package:flame_game_tutorial/actors/water_enemy.dart';
+import 'package:flame_game_tutorial/managers/segment_manager.dart';
+import 'package:flame_game_tutorial/objects/ground_block.dart';
+import 'package:flame_game_tutorial/objects/platform_block.dart';
+import 'package:flame_game_tutorial/objects/star.dart';
+import 'package:flutter/material.dart';
 
 class EmberQuestGame extends FlameGame{
   EmberQuestGame();
 
   late EmberPlayer _ember;
+  double objectSpeed = 0.0;
 
   @override
   Future<void> onLoad() async {
@@ -24,7 +31,41 @@ class EmberQuestGame extends FlameGame{
     // of the `CameraComponent`s viewfinder (where the camera is looking)
     // is in the top left corner, that's why we set the anchor here.
     camera.viewfinder.anchor = Anchor.topLeft;
-    _ember = EmberPlayer(position: Vector2(128, canvasSize.y - 70));
+    initializeGame();
+  }
+
+  void initializeGame() {
+    // Assume that size.x < 3200
+    final segmentsToLoad = (size.x / 640).ceil();
+    segmentsToLoad.clamp(0, segments.length);
+
+    for (var i = 0; i <= segmentsToLoad; i++) {
+      loadGameSegments(i, (640 * i).toDouble());
+    }
+
+    _ember = EmberPlayer(
+      position: Vector2(128, canvasSize.y - 70),
+    );
     world.add(_ember);
+  }
+
+
+  void loadGameSegments(int segmentIndex, double xPositionOffset) {
+    for (final block in segments[segmentIndex]) {
+      switch (block.blockType) {
+        case GroundBlock:
+        case PlatformBlock:
+          add(PlatformBlock(
+            gridPosition: block.gridPosition,
+            xOffset: xPositionOffset,
+          ));
+        case Star:
+        case WaterEnemy:
+      }
+    }
+  }
+  @override
+  Color backgroundColor() {
+    return const Color.fromARGB(255, 173, 223, 247);
   }
 }
