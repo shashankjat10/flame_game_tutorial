@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_game_tutorial/actors/ember.dart';
 import 'package:flame_game_tutorial/actors/water_enemy.dart';
@@ -8,7 +9,7 @@ import 'package:flame_game_tutorial/objects/platform_block.dart';
 import 'package:flame_game_tutorial/objects/star.dart';
 import 'package:flutter/material.dart';
 
-class EmberQuestGame extends FlameGame {
+class EmberQuestGame extends FlameGame with HasKeyboardHandlerComponents {
   EmberQuestGame();
 
   late EmberPlayer _ember;
