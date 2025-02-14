@@ -7,6 +7,7 @@ import 'package:flame_game_tutorial/managers/segment_manager.dart';
 import 'package:flame_game_tutorial/objects/ground_block.dart';
 import 'package:flame_game_tutorial/objects/platform_block.dart';
 import 'package:flame_game_tutorial/objects/star.dart';
+import 'package:flame_game_tutorial/overlays/hud.dart';
 import 'package:flutter/material.dart';
 
 class EmberQuestGame extends FlameGame
@@ -53,6 +54,7 @@ class EmberQuestGame extends FlameGame
       position: Vector2(128, canvasSize.y - 128),
     );
     world.add(_ember);
+    camera.viewport.add(Hud());
   }
 
   void loadGameSegments(int segmentIndex, double xPositionOffset) {
