@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../ember_quest.dart';
 
-class MainMenu extends StatelessWidget {
+class GameOver extends StatelessWidget {
   // Reference to parent game.
   final EmberQuestGame game;
-
-  const MainMenu({super.key, required this.game});
+  const GameOver({super.key, required this.game});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class MainMenu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Ember Quest',
+                'Game Over',
                 style: TextStyle(
                   color: whiteTextColor,
                   fontSize: 24,
@@ -42,29 +41,19 @@ class MainMenu extends StatelessWidget {
                 height: 75,
                 child: ElevatedButton(
                   onPressed: () {
-                    game.overlays.remove('MainMenu');
+                    game.reset();
+                    game.overlays.remove('GameOver');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: whiteTextColor,
                   ),
                   child: const Text(
-                    'Play',
+                    'Play Again',
                     style: TextStyle(
-                      fontSize: 40.0,
+                      fontSize: 28.0,
                       color: blackTextColor,
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                '''Use WASD or Arrow Keys for movement.
-Space bar to jump.
-Collect as many stars as you can and avoid enemies!''',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: whiteTextColor,
-                  fontSize: 14,
                 ),
               ),
             ],
