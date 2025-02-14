@@ -1,9 +1,12 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flutter/services.dart';
 import '../objects/ground_block.dart';
 import '../objects/platform_block.dart';
 import '../ember_quest.dart';
+import '../objects/star.dart';
+import 'water_enemy.dart';
 
 class EmberPlayer extends SpriteAnimationComponent
     with KeyboardHandler, CollisionCallbacks, HasGameReference<EmberQuestGame> {
@@ -16,6 +19,12 @@ class EmberPlayer extends SpriteAnimationComponent
   final double moveSpeed = 200;
   final Vector2 fromAbove = Vector2(0, -1);
   bool isOnGround = false;
+  final double gravity = 15;
+  final double jumpSpeed = 600;
+  final double terminalVelocity = 150;
+  bool hitByEnemy = false;
+
+  bool hasJumped = false;
 
   @override
   void onLoad() {
@@ -27,6 +36,7 @@ class EmberPlayer extends SpriteAnimationComponent
         stepTime: 0.12,
       ),
     );
+    add(CircleHitbox());
   }
 
   @override
@@ -38,6 +48,36 @@ class EmberPlayer extends SpriteAnimationComponent
     } else if (horizontalDirection > 0 && scale.x < 0) {
       flipHorizontally();
     }
+    // Apply basic gravity
+    velocity.y += gravity;
+
+    // Determine if ember has jumped
+    if (hasJumped) {
+      if (isOnGround) {
+        velocity.y = -jumpSpeed;
+        isOnGround = false;
+      }
+      hasJumped = false;
+    }
+
+    // Prevent ember from jumping to crazy fast as well as descending too fast and
+    // crashing through the ground or a platform.
+    velocity.y = velocity.y.clamp(-jumpSpeed, terminalVelocity);
+
+    game.objectSpeed = 0;
+// Prevent ember from going backwards at screen edge.
+    if (position.x - 36 <= 0 && horizontalDirection < 0) {
+      velocity.x = 0;
+    }
+// Prevent ember from going beyond half screen.
+    if (position.x + 64 >= game.size.x / 2 && horizontalDirection > 0) {
+      velocity.x = 0;
+      game.objectSpeed = -moveSpeed;
+    }
+
+    position += velocity * dt;
+    super.update(dt);
+
     super.update(dt);
   }
 
@@ -53,6 +93,7 @@ class EmberPlayer extends SpriteAnimationComponent
         ? 1
         : 0;
 
+    hasJumped = keysPressed.contains(LogicalKeyboardKey.space);
     return true;
   }
 
@@ -80,7 +121,33 @@ class EmberPlayer extends SpriteAnimationComponent
         position += collisionNormal.scaled(separationDistance);
       }
     }
+    if (other is Star) {
+      other.removeFromParent();
+    }
+
+    if (other is WaterEnemy) {
+      hit();
+    }
 
     super.onCollision(intersectionPoints, other);
+  }
+
+  // This method runs an opacity effect on ember
+  // to make it blink.
+  void hit() {
+    if (!hitByEnemy) {
+      hitByEnemy = true;
+    }
+    add(
+      OpacityEffect.fadeOut(
+        EffectController(
+          alternate: true,
+          duration: 0.1,
+          repeatCount: 6,
+        ),
+      )..onComplete = () {
+          hitByEnemy = false;
+        },
+    );
   }
 }

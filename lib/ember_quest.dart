@@ -48,7 +48,7 @@ class EmberQuestGame extends FlameGame
     }
 
     _ember = EmberPlayer(
-      position: Vector2(128, canvasSize.y - 70),
+      position: Vector2(128, canvasSize.y - 128),
     );
     world.add(_ember);
   }
